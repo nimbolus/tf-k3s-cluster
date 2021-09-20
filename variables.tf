@@ -67,5 +67,5 @@ variable "cluster_subnet_id" {
 }
 
 variable "cluster_k3s_server_exec" {
-  defautl = ""
+  default = ""
 }
