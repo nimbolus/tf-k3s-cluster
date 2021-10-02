@@ -69,3 +69,8 @@ variable "cluster_subnet_id" {
 variable "cluster_k3s_server_exec" {
   default = ""
 }
+
+variable "cluster_instance_properties" {
+  description = "additional metadata properties for instances"
+  default     = {}
+}

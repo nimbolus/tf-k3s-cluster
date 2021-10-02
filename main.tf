@@ -51,6 +51,7 @@ module "server1" {
   data_volume_size   = var.cluster_volume_size
   data_volume_type   = var.cluster_volume_type
   floating_ip_pool   = var.cluster_server1_floating_ip ? var.cluster_floating_ip_pool : null
+  server_properties  = var.cluster_instance_properties
 
   cluster_token          = random_password.cluster_token.result
   install_k3s_exec       = "server --cluster-init ${local.common_k3s_server_exec}"
@@ -75,6 +76,7 @@ module "servers" {
   data_volume_size   = var.cluster_volume_size
   data_volume_type   = var.cluster_volume_type
   floating_ip_pool   = var.cluster_servers_floating_ip ? var.cluster_floating_ip_pool : null
+  server_properties  = var.cluster_instance_properties
 
   k3s_join_existing = true
   k3s_url           = module.server1.k3s_url
@@ -99,6 +101,7 @@ module "agents" {
   data_volume_size   = var.cluster_volume_size
   data_volume_type   = var.cluster_volume_type
   floating_ip_pool   = var.cluster_agents_floating_ip ? var.cluster_floating_ip_pool : null
+  server_properties  = var.cluster_instance_properties
 
   k3s_join_existing = true
   k3s_url           = module.server1.k3s_url
