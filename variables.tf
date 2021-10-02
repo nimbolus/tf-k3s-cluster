@@ -31,7 +31,8 @@ variable "cluster_volume_size" {
 }
 
 variable "cluster_key_pair" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "cluster_servers_server_group_policy" {
