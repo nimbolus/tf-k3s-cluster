@@ -35,6 +35,10 @@ variable "cluster_key_pair" {
   default = null
 }
 
+variable "cluster_instance_stop_before_destroy" {
+  default = true
+}
+
 variable "cluster_servers_server_group_policy" {
   default = "soft-anti-affinity"
 }
@@ -67,8 +71,24 @@ variable "cluster_subnet_id" {
   type = string
 }
 
-variable "cluster_k3s_server_exec" {
-  default = ""
+variable "cluster_enable_ipv6" {
+  default = false
+}
+
+variable "cluster_allow_remote_prefix_v6" {
+  default = "::/0"
+}
+
+variable "cluster_k3s_args" {
+  default = []
+}
+
+variable "cluster_k3s_server_args" {
+  default = []
+}
+
+variable "cluster_k3s_agent_args" {
+  default = []
 }
 
 variable "cluster_instance_properties" {
