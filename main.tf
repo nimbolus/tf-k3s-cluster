@@ -72,6 +72,7 @@ module "server1" {
 
   cluster_token          = random_password.cluster_token.result
   k3s_args               = concat(["server", "--cluster-init"], local.common_k3s_server_args)
+  k3s_version            = var.cluster_k3s_version
   bootstrap_token_id     = random_password.cluster_bootstrap_token_id.result
   bootstrap_token_secret = random_password.cluster_bootstrap_token_secret.result
 }
@@ -100,6 +101,7 @@ module "servers" {
   k3s_url           = module.server1.k3s_url
   cluster_token     = random_password.cluster_token.result
   k3s_args          = concat(["server"], local.common_k3s_server_args)
+  k3s_version       = var.cluster_k3s_version
 }
 
 module "agents" {
@@ -126,4 +128,5 @@ module "agents" {
   k3s_url           = module.server1.k3s_url
   cluster_token     = random_password.cluster_token.result
   k3s_args          = local.common_k3s_agent_args
+  k3s_version       = var.cluster_k3s_version
 }
