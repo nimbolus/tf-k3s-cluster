@@ -91,6 +91,10 @@ variable "cluster_k3s_agent_args" {
   default = []
 }
 
+variable "cluster_k3s_version" {
+  default = null
+}
+
 variable "cluster_instance_properties" {
   description = "additional metadata properties for instances"
   default     = {}
