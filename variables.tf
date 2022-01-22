@@ -18,6 +18,10 @@ variable "cluster_image_name" {
   default = "ubuntu-20.04"
 }
 
+variable "cluster_image_scsi_bus" {
+  default = false
+}
+
 variable "cluster_flavor_name" {
   default = "m1.medium"
 }

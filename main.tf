@@ -33,7 +33,7 @@ locals {
 }
 
 module "secgroup" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.1.2"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.1.3"
 
   security_group_name    = "${var.cluster_name}-k3s"
   enable_ipv6            = var.cluster_enable_ipv6
@@ -53,10 +53,11 @@ resource "openstack_compute_servergroup_v2" "agents" {
 }
 
 module "server1" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.2"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.3"
 
   name                       = "${var.cluster_name}-server1"
   image_name                 = var.cluster_image_name
+  image_scsi_bus             = var.cluster_image_scsi_bus
   flavor_name                = var.cluster_flavor_name
   availability_zone          = var.cluster_availability_zone
   keypair_name               = var.cluster_key_pair
@@ -78,12 +79,13 @@ module "server1" {
 }
 
 module "servers" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.2"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.3"
 
   count = var.cluster_servers - 1
 
   name                       = "${var.cluster_name}-server${count.index + 2}"
   image_name                 = var.cluster_image_name
+  image_scsi_bus             = var.cluster_image_scsi_bus
   flavor_name                = var.cluster_flavor_name
   availability_zone          = var.cluster_availability_zone
   keypair_name               = var.cluster_key_pair
@@ -105,12 +107,13 @@ module "servers" {
 }
 
 module "agents" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.2"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.3"
 
   count = var.cluster_size - var.cluster_servers
 
   name                       = "${var.cluster_name}-agent${count.index + 1}"
   image_name                 = var.cluster_image_name
+  image_scsi_bus             = var.cluster_image_scsi_bus
   flavor_name                = var.cluster_flavor_name
   availability_zone          = var.cluster_availability_zone
   keypair_name               = var.cluster_key_pair
