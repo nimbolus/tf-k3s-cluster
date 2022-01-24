@@ -18,12 +18,14 @@ resource "random_password" "cluster_bootstrap_token_secret" {
 locals {
   cluster_token = "${random_password.cluster_bootstrap_token_id.result}.${random_password.cluster_bootstrap_token_secret.result}"
   common_k3s_args = concat(
-    ["--node-label", "az=${var.cluster_availability_zone}"],
+    ["--node-label", "topology.kubernetes.io/zone=${var.cluster_availability_zone}", "--node-label", "cloud-provider=openstack"],
     var.cluster_k3s_args,
   )
   common_k3s_server_args = concat(
     local.common_k3s_args,
     ["--kube-apiserver-arg", "enable-bootstrap-token-auth", "--disable", "traefik", "--disable", "local-storage"],
+    var.cloud_provider_controller_manager ? ["--disable-cloud-controller", "--disable", "servicelb"] : [],
+    var.cilium_cni ? ["--flannel-backend", "none"] : [],
     var.cluster_k3s_server_args,
   )
   common_k3s_agent_args = concat(
@@ -132,4 +134,15 @@ module "agents" {
   cluster_token     = random_password.cluster_token.result
   k3s_args          = local.common_k3s_agent_args
   k3s_version       = var.cluster_k3s_version
+}
+
+locals {
+  k3s_server_url = module.server1.k3s_external_url == "" ? module.server1.k3s_url : module.server1.k3s_external_url
+}
+
+data "k8sbootstrap_auth" "auth" {
+  server = var.k3s_master_load_balancer ? "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}" : local.k3s_server_url
+  token  = local.cluster_token
+
+  depends_on = [module.secgroup]
 }

@@ -103,3 +103,55 @@ variable "cluster_instance_properties" {
   description = "additional metadata properties for instances"
   default     = {}
 }
+
+variable "cloud_provider_controller_manager" {
+  default = false
+}
+
+variable "cloud_provider_controller_manager_version" {
+  default = "1.1.2"
+}
+
+variable "cloud_provider_controller_manager_lb_monitor" {
+  default = true
+}
+
+variable "cloud_provider_cinder_csi" {
+  default = false
+}
+
+variable "cloud_provider_cinder_csi_version" {
+  default = "1.4.9"
+}
+
+variable "cloud_provider_auth_url" {
+  description = ""
+  default     = null
+}
+
+variable "cloud_provider_region" {
+  description = ""
+  default     = null
+}
+
+variable "cloud_provider_application_credential_id" {
+  description = ""
+  default     = null
+}
+
+variable "cloud_provider_application_credential_secret" {
+  description = ""
+  default     = null
+}
+
+variable "cilium_cni" {
+  default = false
+}
+
+variable "cilium_cni_version" {
+  default = "1.11.1"
+}
+
+variable "cilium_cni_values" {
+  default = ""
+}
