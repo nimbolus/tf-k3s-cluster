@@ -99,6 +99,10 @@ variable "cluster_k3s_version" {
   default = null
 }
 
+variable "k3s_master_load_balancer" {
+  default = false
+}
+
 variable "cluster_instance_properties" {
   description = "additional metadata properties for instances"
   default     = {}
