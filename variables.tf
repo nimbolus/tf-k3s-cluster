@@ -159,3 +159,23 @@ variable "cilium_cni_version" {
 variable "cilium_cni_values" {
   default = ""
 }
+
+variable "system_upgrade_controller" {
+  default = false
+}
+
+variable "system_upgrade_controller_version" {
+  default = "0.1.0"
+}
+
+variable "system_upgrade_node_channel" {
+  default = false
+}
+
+variable "system_upgrade_node_channel_version" {
+  default = "0.1.0"
+}
+
+variable "system_upgrade_node_upgrade_plan_image_tag" {
+  default = "0.1.0"
+}

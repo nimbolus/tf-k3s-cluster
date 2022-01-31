@@ -1,0 +1,31 @@
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: openstack-instance
+  namespace: system-upgrade
+spec:
+  concurrency: 1
+  nodeSelector:
+    matchExpressions:
+      - key: cloud-provider
+        operator: In
+        values: ["openstack"]
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      operator: Exists
+  serviceAccountName: system-upgrade
+  secrets:
+    - name: ${secret_name}
+      path: /etc/openstack
+  channel: http://node-upgrade-channel/openstack/images/${openstack_image_name}/latest
+  drain:
+    force: true
+  prepare:
+    image: ghcr.io/nimbolus/k8s-openstack-node-upgrade-agent:${image_tag}
+    args: ["-verify", "-duration=60s"]
+  upgrade:
+    image: ghcr.io/nimbolus/k8s-openstack-node-upgrade-agent:${image_tag}
+    args: ["-instanceUpgrade"]
+    envs:
+      - name: OPENSTACK_IMAGE_NAME
+        value: ${openstack_image_name}
