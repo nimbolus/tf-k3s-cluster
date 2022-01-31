@@ -24,7 +24,7 @@ locals {
   common_k3s_server_args = concat(
     local.common_k3s_args,
     ["--kube-apiserver-arg", "enable-bootstrap-token-auth", "--disable", "traefik", "--disable", "local-storage"],
-    var.cloud_provider_controller_manager ? ["--disable-cloud-controller", "--disable", "servicelb"] : [],
+    var.cloud_controller_manager ? ["--disable-cloud-controller", "--disable", "servicelb"] : [],
     var.cilium_cni ? ["--flannel-backend", "none"] : [],
     var.cluster_k3s_server_args,
   )

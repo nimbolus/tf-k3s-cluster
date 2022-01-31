@@ -20,7 +20,7 @@ resource "helm_release" "system_upgrade_controller" {
   namespace  = kubernetes_namespace.system_upgrade.0.metadata.0.name
   repository = "https://nimbolus.github.io/k8s-openstack-node-upgrade-agent"
   chart      = "system-upgrade-controller"
-  version    = "0.1.0"
+  version    = var.system_upgrade_controller_version
 }
 
 resource "kubectl_manifest" "system_upgrade_server_plan" {
@@ -56,13 +56,13 @@ resource "kubernetes_secret" "node_upgrade_channel" {
       clouds:
         openstack:
           auth:
-            auth_url: "${var.cloud_provider_auth_url}"
-            application_credential_id: "${var.cloud_provider_application_credential_id}"
-            application_credential_secret: "${var.cloud_provider_application_credential_secret}"
+            auth_url: "${var.openstack_auth_url}"
+            application_credential_id: "${var.openstack_application_credential_id}"
+            application_credential_secret: "${var.openstack_application_credential_secret}"
           auth_type: "v3applicationcredential"
           identity_api_version: 3
           interface: "public"
-          region_name: "${var.cloud_provider_region}"
+          region_name: "${var.openstack_region}"
       EOT
   }
 }
