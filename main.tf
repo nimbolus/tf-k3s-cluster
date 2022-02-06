@@ -73,11 +73,23 @@ module "server1" {
   server_properties          = var.cluster_instance_properties
   server_stop_before_destroy = var.cluster_instance_stop_before_destroy
 
-  cluster_token          = random_password.cluster_token.result
-  k3s_args               = concat(["server", "--cluster-init"], local.common_k3s_server_args)
+  k3s_join_existing = !var.cluster_init
+  k3s_url           = var.cluster_init ? null : local.k3s_master_lb_url
+  cluster_token     = random_password.cluster_token.result
+  k3s_args = concat(
+    ["server"],
+    var.cluster_init ? ["--cluster-init"] : [],
+    local.common_k3s_server_args
+  )
   k3s_version            = var.cluster_k3s_version
   bootstrap_token_id     = random_password.cluster_bootstrap_token_id.result
   bootstrap_token_secret = random_password.cluster_bootstrap_token_secret.result
+}
+
+locals {
+  k3s_server_url    = module.server1.k3s_external_url == "" ? module.server1.k3s_url : module.server1.k3s_external_url
+  k3s_master_lb_url = "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}"
+  k3s_join_url      = var.k3s_master_load_balancer ? local.k3s_master_lb_url : module.server1.k3s_url
 }
 
 module "servers" {
@@ -102,10 +114,14 @@ module "servers" {
   server_stop_before_destroy = var.cluster_instance_stop_before_destroy
 
   k3s_join_existing = true
-  k3s_url           = module.server1.k3s_url
+  k3s_url           = local.k3s_join_url
   cluster_token     = random_password.cluster_token.result
   k3s_args          = concat(["server"], local.common_k3s_server_args)
   k3s_version       = var.cluster_k3s_version
+
+  depends_on = [
+    openstack_lb_member_v2.k3s_master1,
+  ]
 }
 
 module "agents" {
@@ -130,19 +146,23 @@ module "agents" {
   server_stop_before_destroy = var.cluster_instance_stop_before_destroy
 
   k3s_join_existing = true
-  k3s_url           = module.server1.k3s_url
+  k3s_url           = local.k3s_join_url
   cluster_token     = random_password.cluster_token.result
   k3s_args          = local.common_k3s_agent_args
   k3s_version       = var.cluster_k3s_version
-}
 
-locals {
-  k3s_server_url = module.server1.k3s_external_url == "" ? module.server1.k3s_url : module.server1.k3s_external_url
+  depends_on = [
+    openstack_lb_member_v2.k3s_master1,
+  ]
 }
 
 data "k8sbootstrap_auth" "auth" {
-  server = var.k3s_master_load_balancer ? "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}" : local.k3s_server_url
+  server = var.k3s_master_load_balancer ? local.k3s_master_lb_url : local.k3s_server_url
   token  = local.cluster_token
 
-  depends_on = [module.secgroup]
+  depends_on = [
+    module.secgroup,
+    openstack_lb_member_v2.k3s_master1,
+    openstack_lb_member_v2.k3s_masters,
+  ]
 }

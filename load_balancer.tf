@@ -24,17 +24,20 @@ resource "openstack_lb_listener_v2" "k3s_master" {
   loadbalancer_id = openstack_lb_loadbalancer_v2.k3s_master.0.id
 }
 
-locals {
-  k3s_server_ips = concat([module.server1.node_ip], module.servers.*.node_ip)
+resource "openstack_lb_member_v2" "k3s_master1" {
+  count = var.k3s_master_load_balancer ? 1 : 0
+
+  pool_id       = openstack_lb_pool_v2.k3s_master.0.id
+  address       = module.server1.node_ip
+  protocol_port = 6443
 }
 
 resource "openstack_lb_member_v2" "k3s_masters" {
-  count = var.k3s_master_load_balancer ? length(local.k3s_server_ips) : 0
+  count = var.k3s_master_load_balancer ? length(module.servers) : 0
 
   pool_id       = openstack_lb_pool_v2.k3s_master.0.id
-  address       = local.k3s_server_ips[count.index]
+  address       = module.servers[count.index].node_ip
   protocol_port = 6443
-
 }
 
 resource "openstack_lb_monitor_v2" "k3s_master" {

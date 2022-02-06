@@ -112,6 +112,10 @@ variable "cluster_instance_properties" {
   default     = {}
 }
 
+variable "cluster_init" {
+  default = true
+}
+
 variable "k3s_master_load_balancer" {
   description = "create Octavia load balancer for k3s master nodes"
   default     = false
@@ -200,19 +204,4 @@ variable "system_upgrade_k3s_plan" {
 variable "system_upgrade_k3s_plan_channel" {
   description = "upgrade channel unattended k3s updates (supported channels: stable, latest)"
   default     = "stable"
-}
-
-variable "system_upgrade_node_channel" {
-  description = "deploy node-upgrade-channel (k8s-openstack-node-upgrade-agent) for unattended OpenStack instance rebuild"
-  default     = false
-}
-
-variable "system_upgrade_node_channel_version" {
-  description = "node-upgrade-channel Helm chart version"
-  default     = "0.1.0"
-}
-
-variable "system_upgrade_node_upgrade_plan_image_tag" {
-  description = "container image tag for k8s-openstack-node-upgrade-agent"
-  default     = "0.1.0"
 }
