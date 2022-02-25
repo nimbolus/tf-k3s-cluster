@@ -74,7 +74,7 @@ module "server1" {
   server_stop_before_destroy = var.cluster_instance_stop_before_destroy
 
   k3s_join_existing = !var.cluster_init
-  k3s_url           = var.cluster_init ? null : local.k3s_master_lb_url
+  k3s_url           = !var.cluster_init && var.k3s_master_load_balancer ? "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}" : ""
   cluster_token     = random_password.cluster_token.result
   k3s_args = concat(
     ["server"],
@@ -87,9 +87,8 @@ module "server1" {
 }
 
 locals {
-  k3s_server_url    = module.server1.k3s_external_url == "" ? module.server1.k3s_url : module.server1.k3s_external_url
-  k3s_master_lb_url = "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}"
-  k3s_join_url      = var.k3s_master_load_balancer ? local.k3s_master_lb_url : module.server1.k3s_url
+  k3s_server1_url = module.server1.k3s_external_url == "" ? module.server1.k3s_url : module.server1.k3s_external_url
+  k3s_server_url  = var.k3s_master_load_balancer ? "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}" : module.server1.k3s_url
 }
 
 module "servers" {
@@ -114,7 +113,7 @@ module "servers" {
   server_stop_before_destroy = var.cluster_instance_stop_before_destroy
 
   k3s_join_existing = true
-  k3s_url           = local.k3s_join_url
+  k3s_url           = local.k3s_server_url
   cluster_token     = random_password.cluster_token.result
   k3s_args          = concat(["server"], local.common_k3s_server_args)
   k3s_version       = var.cluster_k3s_version
@@ -146,7 +145,7 @@ module "agents" {
   server_stop_before_destroy = var.cluster_instance_stop_before_destroy
 
   k3s_join_existing = true
-  k3s_url           = local.k3s_join_url
+  k3s_url           = local.k3s_server_url
   cluster_token     = random_password.cluster_token.result
   k3s_args          = local.common_k3s_agent_args
   k3s_version       = var.cluster_k3s_version
@@ -157,7 +156,7 @@ module "agents" {
 }
 
 data "k8sbootstrap_auth" "auth" {
-  server = var.k3s_master_load_balancer ? local.k3s_master_lb_url : local.k3s_server_url
+  server = var.k3s_master_load_balancer ? local.k3s_server_url : local.k3s_server1_url
   token  = local.cluster_token
 
   depends_on = [
