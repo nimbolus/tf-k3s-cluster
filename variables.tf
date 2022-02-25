@@ -22,7 +22,11 @@ variable "cluster_image_scsi_bus" {
   default = false
 }
 
-variable "cluster_flavor_name" {
+variable "cluster_server_flavor_name" {
+  default = "m1.medium"
+}
+
+variable "cluster_agent_flavor_name" {
   default = "m1.medium"
 }
 
@@ -30,8 +34,12 @@ variable "cluster_volume_type" {
   default = "__DEFAULT__"
 }
 
-variable "cluster_volume_size" {
+variable "cluster_server_volume_size" {
   default = 10
+}
+
+variable "cluster_agent_volume_size" {
+  default = 0
 }
 
 variable "cluster_key_pair" {
@@ -102,4 +110,98 @@ variable "cluster_k3s_version" {
 variable "cluster_instance_properties" {
   description = "additional metadata properties for instances"
   default     = {}
+}
+
+variable "cluster_init" {
+  default = true
+}
+
+variable "k3s_master_load_balancer" {
+  description = "create Octavia load balancer for k3s master nodes"
+  default     = false
+}
+
+variable "openstack_auth_url" {
+  description = "Keystone auth url used for CCM and Cinder CSI"
+  default     = null
+}
+
+variable "openstack_region" {
+  description = "Keystone region used for CCM and Cinder CSI"
+  default     = null
+}
+
+variable "openstack_application_credential_id" {
+  description = "Keystone app credential id used for CCM and Cinder CSI"
+  default     = null
+}
+
+variable "openstack_application_credential_secret" {
+  description = "Keystone app credential secret used for CCM and Cinder CSI"
+  default     = null
+}
+
+variable "kubernetes_version" {
+  description = "Kubernetes major and minor version for CCM and CSI compatibiliy matrix (supported versions: v1.20-v1.23)"
+  default     = "v1.22"
+}
+
+variable "cloud_controller_manager" {
+  description = "deploy OpenStack CCM"
+  default     = false
+}
+
+variable "cloud_controller_manager_version" {
+  description = "CCM Helm chart version"
+  default     = null
+}
+
+variable "cloud_controller_manager_lb_monitor" {
+  description = "add monitors to octavia load balancers created by CCM"
+  default     = true
+}
+
+variable "cinder_csi" {
+  description = "deploy OpenStack Cinder CSI driver"
+  default     = false
+}
+
+variable "cinder_csi_version" {
+  description = "Cinder CSI Helm chart version"
+  default     = null
+}
+
+variable "cilium_cni" {
+  description = "deploy Cilium CNI instead of k3s' default CNI driver"
+  default     = false
+}
+
+variable "cilium_cni_version" {
+  description = "Cilium CNI Helm chart version"
+  default     = "1.11.1"
+}
+
+variable "cilium_cni_values" {
+  description = "additional Helm values for Cilium CNI chart"
+  default     = ""
+}
+
+variable "system_upgrade_controller" {
+  description = "deploy system-upgrade-controller for unattended k3s and OpenStack instance upgrades"
+  default     = false
+}
+
+variable "system_upgrade_controller_version" {
+  description = "system-upgrade-controller Helm chart version"
+  default     = "0.1.0"
+}
+
+variable "system_upgrade_k3s_plan" {
+  description = "enable system-upgrade-controller plan for unattended k3s updates"
+  default     = true
+}
+
+variable "system_upgrade_k3s_plan_channel" {
+  description = "upgrade channel unattended k3s updates (supported channels: stable, latest)"
+  default     = "stable"
 }

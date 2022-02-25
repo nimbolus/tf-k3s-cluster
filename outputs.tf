@@ -3,11 +3,19 @@ output "secgroup_id" {
 }
 
 output "k3s_url" {
-  value = module.server1.k3s_external_url == "" ? module.server1.k3s_url : module.server1.k3s_external_url
+  value = data.k8sbootstrap_auth.auth.server
+}
+
+output "cluster_ca_certificate" {
+  value = data.k8sbootstrap_auth.auth.ca_crt
 }
 
 output "cluster_token" {
   value = local.cluster_token
+}
+
+output "kubeconfig" {
+  value = data.k8sbootstrap_auth.auth.kubeconfig
 }
 
 output "servers_node_ips" {
