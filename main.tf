@@ -19,6 +19,7 @@ locals {
   cluster_token = "${random_password.cluster_bootstrap_token_id.result}.${random_password.cluster_bootstrap_token_secret.result}"
   common_k3s_args = concat(
     ["--node-label", "topology.kubernetes.io/zone=${var.cluster_availability_zone}", "--node-label", "cloud-provider=openstack"],
+    var.k3s_master_load_balancer ? ["--tls-san", openstack_lb_loadbalancer_v2.k3s_master.0.vip_address] : [],
     var.cluster_k3s_args,
   )
   common_k3s_server_args = concat(
