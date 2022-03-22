@@ -30,6 +30,14 @@ variable "cluster_agent_flavor_name" {
   default = "m1.medium"
 }
 
+variable "cluster_server_ephemeral_volume" {
+  default = false
+}
+
+variable "cluster_agent_ephemeral_volume" {
+  default = false
+}
+
 variable "cluster_volume_type" {
   default = "__DEFAULT__"
 }
@@ -105,6 +113,10 @@ variable "cluster_k3s_agent_args" {
 
 variable "cluster_k3s_version" {
   default = null
+}
+
+variable "cluster_k3s_channel" {
+  default = "stable"
 }
 
 variable "cluster_instance_properties" {

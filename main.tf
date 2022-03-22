@@ -35,7 +35,7 @@ locals {
 }
 
 module "secgroup" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.1.3"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.2.0"
 
   security_group_name    = "${var.cluster_name}-k3s"
   enable_ipv6            = var.cluster_enable_ipv6
@@ -55,7 +55,7 @@ resource "openstack_compute_servergroup_v2" "agents" {
 }
 
 module "server1" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.3"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.0"
 
   name                       = "${var.cluster_name}-server1"
   image_name                 = var.cluster_image_name
@@ -67,6 +67,7 @@ module "server1" {
   subnet_id                  = var.cluster_subnet_id
   security_group_ids         = [module.secgroup.id]
   server_group_id            = openstack_compute_servergroup_v2.servers.id
+  ephemeral_data_volume      = var.cluster_server_ephemeral_volume
   data_volume_size           = var.cluster_server_volume_size
   data_volume_type           = var.cluster_volume_type
   floating_ip_pool           = var.cluster_server1_floating_ip ? var.cluster_floating_ip_pool : null
@@ -82,6 +83,7 @@ module "server1" {
     local.common_k3s_server_args
   )
   k3s_version            = var.cluster_k3s_version
+  k3s_channel            = var.cluster_k3s_channel
   bootstrap_token_id     = random_password.cluster_bootstrap_token_id.result
   bootstrap_token_secret = random_password.cluster_bootstrap_token_secret.result
 }
@@ -92,7 +94,7 @@ locals {
 }
 
 module "servers" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.3"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.0"
 
   count = var.cluster_servers - 1
 
@@ -106,6 +108,7 @@ module "servers" {
   subnet_id                  = var.cluster_subnet_id
   security_group_ids         = [module.secgroup.id]
   server_group_id            = openstack_compute_servergroup_v2.servers.id
+  ephemeral_data_volume      = var.cluster_server_ephemeral_volume
   data_volume_size           = var.cluster_server_volume_size
   data_volume_type           = var.cluster_volume_type
   floating_ip_pool           = var.cluster_servers_floating_ip ? var.cluster_floating_ip_pool : null
@@ -117,6 +120,7 @@ module "servers" {
   cluster_token     = random_password.cluster_token.result
   k3s_args          = concat(["server"], local.common_k3s_server_args)
   k3s_version       = var.cluster_k3s_version
+  k3s_channel       = var.cluster_k3s_channel
 
   depends_on = [
     openstack_lb_member_v2.k3s_master1,
@@ -124,7 +128,7 @@ module "servers" {
 }
 
 module "agents" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.1.3"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.0"
 
   count = var.cluster_size - var.cluster_servers
 
@@ -138,6 +142,7 @@ module "agents" {
   subnet_id                  = var.cluster_subnet_id
   security_group_ids         = [module.secgroup.id]
   server_group_id            = openstack_compute_servergroup_v2.agents.0.id
+  ephemeral_data_volume      = var.cluster_agent_ephemeral_volume
   data_volume_size           = var.cluster_agent_volume_size
   data_volume_type           = var.cluster_volume_type
   floating_ip_pool           = var.cluster_agents_floating_ip ? var.cluster_floating_ip_pool : null
@@ -149,6 +154,7 @@ module "agents" {
   cluster_token     = random_password.cluster_token.result
   k3s_args          = local.common_k3s_agent_args
   k3s_version       = var.cluster_k3s_version
+  k3s_channel       = var.cluster_k3s_channel
 
   depends_on = [
     openstack_lb_member_v2.k3s_master1,
