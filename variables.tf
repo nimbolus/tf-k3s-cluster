@@ -18,6 +18,10 @@ variable "cluster_image_name" {
   default = "ubuntu-20.04"
 }
 
+variable "cluster_image_id" {
+  default = null
+}
+
 variable "cluster_image_scsi_bus" {
   default = false
 }

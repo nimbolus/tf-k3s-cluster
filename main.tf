@@ -60,6 +60,7 @@ module "server1" {
 
   name                       = "${var.cluster_name}-server1"
   image_name                 = var.cluster_image_name
+  image_id                   = var.cluster_image_id
   image_scsi_bus             = var.cluster_image_scsi_bus
   flavor_name                = var.cluster_server_flavor_name
   availability_zone          = var.cluster_availability_zone
@@ -101,6 +102,7 @@ module "servers" {
 
   name                       = "${var.cluster_name}-server${count.index + 2}"
   image_name                 = var.cluster_image_name
+  image_id                   = var.cluster_image_id
   image_scsi_bus             = var.cluster_image_scsi_bus
   flavor_name                = var.cluster_server_flavor_name
   availability_zone          = var.cluster_availability_zone
@@ -135,6 +137,7 @@ module "agents" {
 
   name                       = "${var.cluster_name}-agent${count.index + 1}"
   image_name                 = var.cluster_image_name
+  image_id                   = var.cluster_image_id
   image_scsi_bus             = var.cluster_image_scsi_bus
   flavor_name                = var.cluster_agent_flavor_name
   availability_zone          = var.cluster_availability_zone
