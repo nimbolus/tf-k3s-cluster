@@ -18,7 +18,7 @@ resource "helm_release" "system_upgrade_controller" {
 
   name       = "system-upgrade-controller"
   namespace  = kubernetes_namespace.system_upgrade.0.metadata.0.name
-  repository = "https://nimbolus.github.io/k8s-openstack-node-upgrade-agent"
+  repository = "https://nimbolus.github.io/helm-charts"
   chart      = "system-upgrade-controller"
   version    = var.system_upgrade_controller_version
 }
