@@ -36,7 +36,7 @@ locals {
 }
 
 module "secgroup" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.2.0"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.2.1"
 
   security_group_name    = "${var.cluster_name}-k3s"
   enable_ipv6            = var.cluster_enable_ipv6
@@ -56,7 +56,7 @@ resource "openstack_compute_servergroup_v2" "agents" {
 }
 
 module "server1" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.0"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.1"
 
   name                       = "${var.cluster_name}-server1"
   image_name                 = var.cluster_image_name
@@ -96,7 +96,7 @@ locals {
 }
 
 module "servers" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.0"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.1"
 
   count = var.cluster_servers - 1
 
@@ -131,7 +131,7 @@ module "servers" {
 }
 
 module "agents" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.0"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.1"
 
   count = var.cluster_size - var.cluster_servers
 
