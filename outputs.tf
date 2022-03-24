@@ -27,9 +27,9 @@ output "servers_node_external_ips" {
 }
 
 output "agents_node_ips" {
-  value = module.agents.*.node_ip
+  value = { for p, v in module.agent_node_pools : p => v["agents_node_ips"] }
 }
 
 output "agents_node_external_ips" {
-  value = module.agents.*.node_external_ip
+  value = { for p, v in module.agent_node_pools : p => v["agents_node_external_ips"] }
 }

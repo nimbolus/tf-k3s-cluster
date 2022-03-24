@@ -109,15 +109,10 @@ resource "helm_release" "cinder_csi" {
   name       = "cinder-csi"
   namespace  = kubernetes_namespace.cloud_provider.0.metadata.0.name
   version    = local.cinder_csi_version
-  values = [<<-EOT
+  values = [var.cinder_csi_values, <<-EOT
     secret:
       enabled: true
       name: ${kubernetes_secret.cloud_config.0.metadata.0.name}
-
-    storageClass:
-      enabled: true
-      delete:
-        isDefault: true
     EOT
   ]
 
