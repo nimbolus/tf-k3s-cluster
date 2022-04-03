@@ -14,6 +14,10 @@ output "cluster_token" {
   value = local.cluster_token
 }
 
+output "cluster_name" {
+  value = var.cluster_name
+}
+
 output "kubeconfig" {
   value = data.k8sbootstrap_auth.auth.kubeconfig
 }

@@ -86,6 +86,9 @@ resource "helm_release" "cloud_controller_manager" {
       - key: node-role.kubernetes.io/control-plane
         value: "true"
         effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        value: "true"
+        effect: NoSchedule
       - key: node-role.kubernetes.io/etcd
         value: "true"
         effect: NoExecute
