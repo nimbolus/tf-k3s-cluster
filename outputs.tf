@@ -18,6 +18,10 @@ output "cluster_name" {
   value = var.cluster_name
 }
 
+output "cluster_join_token" {
+  value = random_password.cluster_token.result
+}
+
 output "kubeconfig" {
   value = data.k8sbootstrap_auth.auth.kubeconfig
 }
