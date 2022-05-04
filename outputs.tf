@@ -14,6 +14,14 @@ output "cluster_token" {
   value = local.cluster_token
 }
 
+output "cluster_name" {
+  value = var.cluster_name
+}
+
+output "cluster_join_token" {
+  value = random_password.cluster_token.result
+}
+
 output "kubeconfig" {
   value = data.k8sbootstrap_auth.auth.kubeconfig
 }
@@ -27,9 +35,9 @@ output "servers_node_external_ips" {
 }
 
 output "agents_node_ips" {
-  value = module.agents.*.node_ip
+  value = { for p, v in module.agent_node_pools : p => v["agents_node_ips"] }
 }
 
 output "agents_node_external_ips" {
-  value = module.agents.*.node_external_ip
+  value = { for p, v in module.agent_node_pools : p => v["agents_node_external_ips"] }
 }

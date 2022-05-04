@@ -1,78 +1,5 @@
-variable "cluster_name" {
-  default = "example"
-}
-
-variable "cluster_availability_zone" {
-  default = "nova"
-}
-
-variable "cluster_size" {
-  default = 1
-}
-
 variable "cluster_servers" {
   default = 1
-}
-
-variable "cluster_image_name" {
-  default = "ubuntu-20.04"
-}
-
-variable "cluster_image_id" {
-  default = null
-}
-
-variable "cluster_image_scsi_bus" {
-  default = false
-}
-
-variable "cluster_server_flavor_name" {
-  default = "m1.medium"
-}
-
-variable "cluster_agent_flavor_name" {
-  default = "m1.medium"
-}
-
-variable "cluster_server_ephemeral_volume" {
-  default = false
-}
-
-variable "cluster_agent_ephemeral_volume" {
-  default = false
-}
-
-variable "cluster_volume_type" {
-  default = "__DEFAULT__"
-}
-
-variable "cluster_server_volume_size" {
-  default = 10
-}
-
-variable "cluster_agent_volume_size" {
-  default = 0
-}
-
-variable "cluster_key_pair" {
-  type    = string
-  default = null
-}
-
-variable "cluster_instance_stop_before_destroy" {
-  default = true
-}
-
-variable "cluster_servers_server_group_policy" {
-  default = "soft-anti-affinity"
-}
-
-variable "cluster_agents_server_group_policy" {
-  default = "soft-anti-affinity"
-}
-
-variable "cluster_floating_ip_pool" {
-  default = null
 }
 
 variable "cluster_server1_floating_ip" {
@@ -83,53 +10,41 @@ variable "cluster_servers_floating_ip" {
   default = false
 }
 
-variable "cluster_agents_floating_ip" {
+variable "cluster_server_taint" {
   default = false
-}
-
-variable "cluster_network_id" {
-  type = string
-}
-
-variable "cluster_subnet_id" {
-  type = string
-}
-
-variable "cluster_enable_ipv6" {
-  default = false
-}
-
-variable "cluster_allow_remote_prefix_v6" {
-  default = "::/0"
-}
-
-variable "cluster_k3s_args" {
-  default = []
 }
 
 variable "cluster_k3s_server_args" {
   default = []
 }
 
-variable "cluster_k3s_agent_args" {
-  default = []
-}
-
-variable "cluster_k3s_version" {
-  default = null
-}
-
-variable "cluster_k3s_channel" {
-  default = "stable"
-}
-
-variable "cluster_instance_properties" {
-  description = "additional metadata properties for instances"
-  default     = {}
-}
-
 variable "cluster_init" {
   default = true
+}
+
+variable "cluster_agent_node_pools" {
+  default     = {}
+  description = "k3s agent node pools"
+  type = map(object({
+    size                  = number
+    availability_zone     = optional(string)
+    network_id            = optional(string)
+    subnet_id             = optional(string)
+    image_name            = optional(string)
+    image_id              = optional(string)
+    image_scsi_bus        = optional(bool)
+    flavor_name           = optional(string)
+    ephemeral_data_volume = optional(bool)
+    data_volume_type      = optional(string)
+    data_volume_size      = optional(number)
+    server_group_policy   = optional(string)
+    floating_ip           = optional(bool)
+    k3s_args              = optional(list(string))
+    k3s_version           = optional(string)
+    k3s_channel           = optional(string)
+    k3s_install_url       = optional(string)
+    instance_properties   = optional(map(string))
+  }))
 }
 
 variable "k3s_master_load_balancer" {
@@ -185,6 +100,16 @@ variable "cinder_csi" {
 variable "cinder_csi_version" {
   description = "Cinder CSI Helm chart version"
   default     = null
+}
+
+variable "cinder_csi_values" {
+  description = "additional Helm values for Cinder CSI chart"
+  default     = <<-EOT
+    storageClass:
+      enabled: true
+      delete:
+        isDefault: true
+    EOT
 }
 
 variable "cilium_cni" {
