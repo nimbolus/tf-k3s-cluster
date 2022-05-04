@@ -4,7 +4,7 @@ resource "openstack_compute_servergroup_v2" "agents" {
 }
 
 module "agents" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.1"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.3"
 
   count = var.node_pool["size"]
 
@@ -34,6 +34,7 @@ module "agents" {
     ["--node-label", "topology.kubernetes.io/zone=${var.node_pool["availability_zone"]}"],
     lookup(var.node_pool, "k3s_args", var.cluster_k3s_agent_args),
   )
-  k3s_version = var.node_pool["k3s_version"]
-  k3s_channel = var.node_pool["k3s_channel"]
+  k3s_version     = var.node_pool["k3s_version"]
+  k3s_channel     = var.node_pool["k3s_channel"]
+  k3s_install_url = var.node_pool["k3s_install_url"]
 }

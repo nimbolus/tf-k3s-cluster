@@ -44,11 +44,12 @@ locals {
     floating_ip           = false
     k3s_version           = var.cluster_k3s_version
     k3s_channel           = var.cluster_k3s_channel
+    k3s_install_url       = var.cluster_k3s_install_url
   })
 }
 
 module "secgroup" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.2.1"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.2.3"
 
   security_group_name    = "${var.cluster_name}-k3s"
   enable_ipv6            = var.cluster_enable_ipv6
@@ -61,7 +62,7 @@ resource "openstack_compute_servergroup_v2" "servers" {
 }
 
 module "server1" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.1"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.3"
 
   name                       = "${var.cluster_name}-server1"
   image_name                 = var.cluster_image_name
@@ -91,6 +92,7 @@ module "server1" {
   )
   k3s_version            = var.cluster_k3s_version
   k3s_channel            = var.cluster_k3s_channel
+  k3s_install_url        = var.cluster_k3s_install_url
   bootstrap_token_id     = random_password.cluster_bootstrap_token_id.result
   bootstrap_token_secret = random_password.cluster_bootstrap_token_secret.result
 }
@@ -101,7 +103,7 @@ locals {
 }
 
 module "servers" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.1"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.3"
 
   count = var.cluster_servers - 1
 
@@ -129,6 +131,7 @@ module "servers" {
   k3s_args          = concat(["server"], local.common_k3s_server_args)
   k3s_version       = var.cluster_k3s_version
   k3s_channel       = var.cluster_k3s_channel
+  k3s_install_url   = var.cluster_k3s_install_url
 
   depends_on = [
     openstack_lb_member_v2.k3s_master1,

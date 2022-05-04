@@ -64,6 +64,11 @@ variable "cluster_k3s_channel" {
   default = "stable"
 }
 
+variable "cluster_k3s_install_url" {
+  type    = string
+  default = "https://get.k3s.io"
+}
+
 variable "cluster_k3s_agent_args" {
   description = "k3s args for agent nodes, when not overwritten by the node pool `k3s_args` attribute"
   type        = list(string)

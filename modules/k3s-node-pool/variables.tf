@@ -20,6 +20,7 @@ variable "node_pool" {
     k3s_args              = list(string)
     k3s_version           = string
     k3s_channel           = string
+    k3s_install_url       = string
     instance_properties   = map(string)
   })
 }
