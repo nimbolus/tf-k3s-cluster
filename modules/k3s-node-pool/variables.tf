@@ -22,6 +22,7 @@ variable "node_pool" {
     k3s_channel           = string
     k3s_install_url       = string
     instance_properties   = map(string)
+    allowed_address_cidrs = list(string)
   })
 }
 
@@ -35,6 +36,10 @@ variable "cluster_k3s_agent_args" {
 
 variable "cluster_instance_properties" {
   type = map(string)
+}
+
+variable "cluster_allowed_address_cidrs" {
+  type = list(string)
 }
 
 variable "k3s_url" {

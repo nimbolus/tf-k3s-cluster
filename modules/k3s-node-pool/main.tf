@@ -4,7 +4,7 @@ resource "openstack_compute_servergroup_v2" "agents" {
 }
 
 module "agents" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.4"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.5"
 
   count = var.node_pool["size"]
 
@@ -20,6 +20,7 @@ module "agents" {
   data_volume_type           = var.node_pool["data_volume_type"]
   data_volume_size           = var.node_pool["data_volume_size"]
   server_properties          = lookup(var.node_pool, "instance_properties", var.cluster_instance_properties)
+  allowed_address_cidrs      = lookup(var.node_pool, "allowed_address_cidrs", var.cluster_allowed_address_cidrs)
   floating_ip_pool           = var.node_pool["floating_ip"] ? var.cluster_floating_ip_pool : null
   keypair_name               = var.cluster_key_pair
   security_group_ids         = var.security_group_ids

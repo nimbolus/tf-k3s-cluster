@@ -80,3 +80,9 @@ variable "cluster_instance_properties" {
   type        = map(string)
   default     = {}
 }
+
+variable "cluster_allowed_address_cidrs" {
+  description = "list of CIDRs which will be whitelisted by the anti-spoofing rules"
+  type        = list(string)
+  default     = []
+}

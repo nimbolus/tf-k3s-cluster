@@ -49,7 +49,7 @@ locals {
 }
 
 module "secgroup" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.2.4"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack/security-group?ref=v4.2.5"
 
   security_group_name    = "${var.cluster_name}-k3s"
   enable_ipv6            = var.cluster_enable_ipv6
@@ -62,7 +62,7 @@ resource "openstack_compute_servergroup_v2" "servers" {
 }
 
 module "server1" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.4"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.5"
 
   name                       = "${var.cluster_name}-server1"
   image_name                 = var.cluster_image_name
@@ -80,6 +80,7 @@ module "server1" {
   data_volume_type           = var.cluster_data_volume_type
   floating_ip_pool           = var.cluster_server1_floating_ip ? var.cluster_floating_ip_pool : null
   server_properties          = var.cluster_instance_properties
+  allowed_address_cidrs      = var.cluster_allowed_address_cidrs
   server_stop_before_destroy = var.cluster_instance_stop_before_destroy
 
   k3s_join_existing = !var.cluster_init
@@ -103,7 +104,7 @@ locals {
 }
 
 module "servers" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.4"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.5"
 
   count = var.cluster_servers - 1
 
@@ -123,6 +124,7 @@ module "servers" {
   data_volume_type           = var.cluster_data_volume_type
   floating_ip_pool           = var.cluster_servers_floating_ip ? var.cluster_floating_ip_pool : null
   server_properties          = var.cluster_instance_properties
+  allowed_address_cidrs      = var.cluster_allowed_address_cidrs
   server_stop_before_destroy = var.cluster_instance_stop_before_destroy
 
   k3s_join_existing = true
@@ -151,6 +153,7 @@ module "agent_node_pools" {
   cluster_k3s_args                     = var.cluster_k3s_args
   cluster_k3s_agent_args               = var.cluster_k3s_agent_args
   cluster_instance_properties          = var.cluster_instance_properties
+  cluster_allowed_address_cidrs        = var.cluster_allowed_address_cidrs
 
   k3s_url            = local.k3s_server_url
   security_group_ids = [module.secgroup.id]

@@ -44,6 +44,7 @@ variable "cluster_agent_node_pools" {
     k3s_channel           = optional(string)
     k3s_install_url       = optional(string)
     instance_properties   = optional(map(string))
+    allowed_address_cidrs = optional(map(string))
   }))
 }
 
