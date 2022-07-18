@@ -25,7 +25,7 @@ locals {
     var.cluster_server_taint ? ["--node-taint", "node-role.kubernetes.io/master=true:NoSchedule"] : [],
     var.k3s_master_load_balancer ? ["--tls-san", openstack_lb_loadbalancer_v2.k3s_master.0.vip_address] : [],
     var.cloud_controller_manager ? ["--disable-cloud-controller", "--disable", "servicelb"] : [],
-    var.cilium_cni ? ["--flannel-backend", "none"] : [],
+    var.cilium_cni ? ["--flannel-backend", "none", "--disable-network-policy"] : [],
     var.cluster_k3s_server_args,
   )
 
