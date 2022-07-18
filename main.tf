@@ -89,6 +89,7 @@ module "server1" {
   k3s_args = concat(
     ["server"],
     var.cluster_init ? ["--cluster-init"] : [],
+    var.cluster_node_domain != null ? ["--node-name", "server1.${var.cluster_node_domain}"] : [],
     local.common_k3s_server_args
   )
   k3s_version            = var.cluster_k3s_version
@@ -130,10 +131,14 @@ module "servers" {
   k3s_join_existing = true
   k3s_url           = local.k3s_server_url
   cluster_token     = random_password.cluster_token.result
-  k3s_args          = concat(["server"], local.common_k3s_server_args)
-  k3s_version       = var.cluster_k3s_version
-  k3s_channel       = var.cluster_k3s_channel
-  k3s_install_url   = var.cluster_k3s_install_url
+  k3s_args = concat(
+    ["server"],
+    var.cluster_node_domain != null ? ["--node-name", "server${count.index + 2}.${var.cluster_node_domain}"] : [],
+    local.common_k3s_server_args,
+  )
+  k3s_version     = var.cluster_k3s_version
+  k3s_channel     = var.cluster_k3s_channel
+  k3s_install_url = var.cluster_k3s_install_url
 
   depends_on = [
     openstack_lb_member_v2.k3s_master1,

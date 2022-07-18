@@ -34,6 +34,7 @@ module "agents" {
     var.cluster_k3s_args,
     ["--node-label", "topology.kubernetes.io/zone=${var.node_pool["availability_zone"]}"],
     lookup(var.node_pool, "k3s_args", var.cluster_k3s_agent_args),
+    var.cluster_node_domain != null ? ["--node-name", "${var.node_pool_name}-agent${count.index + 1}.${var.cluster_node_domain}"] : [],
   )
   k3s_version     = var.node_pool["k3s_version"]
   k3s_channel     = var.node_pool["k3s_channel"]

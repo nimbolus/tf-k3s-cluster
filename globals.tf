@@ -27,3 +27,8 @@ variable "cluster_k3s_args" {
   description = "k3s args for all servers and agents"
   default     = ["--node-label", "cloud-provider=openstack"]
 }
+
+variable "cluster_node_domain" {
+  description = "DNS domain for nodes , e.g. mycluster.exmaple.com"
+  default     = null
+}
