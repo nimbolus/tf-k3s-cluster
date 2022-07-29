@@ -3,15 +3,9 @@ resource "helm_release" "cilium_cni" {
 
   name       = "cilium"
   namespace  = "kube-system"
-  repository = "https://helm.cilium.io/"
-  chart      = "cilium"
+  repository = var.cilium_cni_repository
+  chart      = var.cilium_cni_chart
   version    = var.cilium_cni_version
 
-  values = [<<-EOT
-    ipam:
-      mode: kubernetes
-
-    ${var.cilium_cni_values}
-    EOT
-  ]
+  values = [var.cilium_cni_values]
 }

@@ -118,14 +118,25 @@ variable "cilium_cni" {
   default     = false
 }
 
+variable "cilium_cni_repository" {
+  default = "https://helm.cilium.io/"
+}
+
+variable "cilium_cni_chart" {
+  default = "cilium"
+}
+
 variable "cilium_cni_version" {
   description = "Cilium CNI Helm chart version"
-  default     = "1.11.2"
+  default     = "1.11.7"
 }
 
 variable "cilium_cni_values" {
   description = "additional Helm values for Cilium CNI chart"
-  default     = ""
+  default     = <<-EOT
+    ipam:
+      mode: kubernetes
+    EOT
 }
 
 variable "system_upgrade_controller" {
