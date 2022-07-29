@@ -55,6 +55,7 @@ resource "kubernetes_secret" "cloud_config" {
       [LoadBalancer]
       subnet-id=${var.cluster_subnet_id}
       create-monitor=${var.cloud_controller_manager_lb_monitor}
+      enable-ingress-hostname=${var.cloud_controller_manager_ingress_hostname}
       EOT
     # cinder config
     cloud-config = <<-EOT

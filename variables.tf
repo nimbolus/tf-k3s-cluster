@@ -93,6 +93,11 @@ variable "cloud_controller_manager_lb_monitor" {
   default     = true
 }
 
+variable "cloud_controller_manager_ingress_hostname" {
+  description = "set hostname instead of load balancer IP (reqired when ingress LB uses proxy protocol)"
+  default     = false
+}
+
 variable "cinder_csi" {
   description = "deploy OpenStack Cinder CSI driver"
   default     = false
