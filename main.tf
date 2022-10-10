@@ -29,7 +29,7 @@ locals {
     var.cluster_k3s_server_args,
   )
 
-  cluster_agent_node_pools = defaults(var.cluster_agent_node_pools, {
+  node_pool_defaults = {
     availability_zone     = var.cluster_availability_zone
     network_id            = var.cluster_network_id
     subnet_id             = var.cluster_subnet_id
@@ -42,10 +42,18 @@ locals {
     data_volume_size      = var.cluster_data_volume_size
     server_group_policy   = var.cluster_server_group_policy
     floating_ip           = false
+    k3s_args              = var.cluster_k3s_agent_args
     k3s_version           = var.cluster_k3s_version
     k3s_channel           = var.cluster_k3s_channel
     k3s_install_url       = var.cluster_k3s_install_url
-  })
+    instance_properties   = var.cluster_instance_properties
+    allowed_address_cidrs = var.cluster_allowed_address_cidrs
+  }
+
+  # load node pool defaults
+  cluster_agent_node_pools = { for name, pool in var.cluster_agent_node_pools : name => {
+    for k, v in pool : k => v == null ? lookup(local.node_pool_defaults, k, null) : v
+  } }
 }
 
 module "secgroup" {
@@ -156,9 +164,6 @@ module "agent_node_pools" {
   cluster_floating_ip_pool             = var.cluster_floating_ip_pool
   cluster_token                        = random_password.cluster_token.result
   cluster_k3s_args                     = var.cluster_k3s_args
-  cluster_k3s_agent_args               = var.cluster_k3s_agent_args
-  cluster_instance_properties          = var.cluster_instance_properties
-  cluster_allowed_address_cidrs        = var.cluster_allowed_address_cidrs
 
   k3s_url            = local.k3s_server_url
   security_group_ids = [module.secgroup.id]
