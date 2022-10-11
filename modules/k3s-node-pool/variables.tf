@@ -30,18 +30,6 @@ variable "cluster_token" {
   type = string
 }
 
-variable "cluster_k3s_agent_args" {
-  type = list(string)
-}
-
-variable "cluster_instance_properties" {
-  type = map(string)
-}
-
-variable "cluster_allowed_address_cidrs" {
-  type = list(string)
-}
-
 variable "k3s_url" {
   type = string
 }

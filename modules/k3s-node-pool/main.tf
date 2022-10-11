@@ -19,8 +19,8 @@ module "agents" {
   ephemeral_data_volume      = var.node_pool["ephemeral_data_volume"]
   data_volume_type           = var.node_pool["data_volume_type"]
   data_volume_size           = var.node_pool["data_volume_size"]
-  server_properties          = lookup(var.node_pool, "instance_properties", var.cluster_instance_properties)
-  allowed_address_cidrs      = lookup(var.node_pool, "allowed_address_cidrs", var.cluster_allowed_address_cidrs)
+  server_properties          = var.node_pool["instance_properties"]
+  allowed_address_cidrs      = var.node_pool["allowed_address_cidrs"]
   floating_ip_pool           = var.node_pool["floating_ip"] ? var.cluster_floating_ip_pool : null
   keypair_name               = var.cluster_key_pair
   security_group_ids         = var.security_group_ids
@@ -33,7 +33,7 @@ module "agents" {
   k3s_args = concat(
     var.cluster_k3s_args,
     ["--node-label", "topology.kubernetes.io/zone=${var.node_pool["availability_zone"]}"],
-    lookup(var.node_pool, "k3s_args", var.cluster_k3s_agent_args),
+    var.node_pool["k3s_args"],
     var.cluster_node_domain != null ? ["--node-name", "${var.node_pool_name}-agent${count.index + 1}.${var.cluster_node_domain}"] : [],
   )
   k3s_version     = var.node_pool["k3s_version"]
