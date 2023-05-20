@@ -7,6 +7,10 @@ locals {
     "v1.21" : "1.0.2",
     "v1.22" : "1.1.2",
     "v1.23" : "1.2.0",
+    "v1.24" : "2.24.0",
+    "v1.25" : "2.25.0",
+    "v1.26" : "2.26.0",
+    "v1.27" : "2.27.1",
   }
   cloud_controller_manager_version = var.cloud_controller_manager_version != null ? var.cloud_controller_manager_version : local.cloud_controller_manager_version_matrix[var.kubernetes_version]
 
@@ -16,6 +20,10 @@ locals {
     "v1.21" : "1.3.8",
     "v1.22" : "1.4.9",
     "v1.23" : "2.1.0",
+    "v1.24" : "2.24.0",
+    "v1.25" : "2.25.0",
+    "v1.26" : "2.26.0",
+    "v1.27" : "2.27.1",
   }
   cinder_csi_version = var.cinder_csi_version != null ? var.cinder_csi_version : local.cinder_csi_version_matrix[var.kubernetes_version]
 }
@@ -44,7 +52,6 @@ resource "kubernetes_secret" "cloud_config" {
   }
 
   data = {
-    # cloud-controller-manager config
     "cloud.conf" = <<-EOT
       [Global]
       auth-url=${var.openstack_auth_url}
@@ -57,7 +64,7 @@ resource "kubernetes_secret" "cloud_config" {
       create-monitor=${var.cloud_controller_manager_lb_monitor}
       enable-ingress-hostname=${var.cloud_controller_manager_ingress_hostname}
       EOT
-    # cinder config
+    # cloud config for cinder-csi releases <1.24
     cloud-config = <<-EOT
       [Global]
       auth-url=${var.openstack_auth_url}
@@ -116,6 +123,7 @@ resource "helm_release" "cinder_csi" {
   values = [var.cinder_csi_values, <<-EOT
     secret:
       enabled: true
+      create: false
       name: ${kubernetes_secret.cloud_config.0.metadata.0.name}
     EOT
   ]
