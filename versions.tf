@@ -3,7 +3,7 @@ terraform {
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
-      version = "~> 1.43.0"
+      version = "~> 1.51.0"
     }
     k8sbootstrap = {
       source  = "nimbolus/k8sbootstrap"
@@ -11,7 +11,7 @@ terraform {
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "~> 1.13.0"
+      version = "~> 1.14.0"
     }
   }
 }
