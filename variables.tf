@@ -74,8 +74,8 @@ variable "openstack_application_credential_secret" {
 }
 
 variable "kubernetes_version" {
-  description = "Kubernetes major and minor version for CCM and CSI compatibiliy matrix (supported versions: v1.20-v1.23)"
-  default     = "v1.22"
+  description = "Kubernetes major and minor version for CCM and CSI compatibility matrix (supported versions: v1.20-v1.27)"
+  default     = "v1.26"
 }
 
 variable "cloud_controller_manager" {
@@ -133,7 +133,7 @@ variable "cilium_cni_chart" {
 
 variable "cilium_cni_version" {
   description = "Cilium CNI Helm chart version"
-  default     = "1.11.7"
+  default     = "1.14.2"
 }
 
 variable "cilium_cni_values" {
@@ -151,15 +151,5 @@ variable "system_upgrade_controller" {
 
 variable "system_upgrade_controller_version" {
   description = "system-upgrade-controller Helm chart version"
-  default     = "0.1.0"
-}
-
-variable "system_upgrade_k3s_plan" {
-  description = "enable system-upgrade-controller plan for unattended k3s updates"
-  default     = true
-}
-
-variable "system_upgrade_k3s_plan_channel" {
-  description = "upgrade channel unattended k3s updates (supported channels: stable, latest)"
-  default     = "stable"
+  default     = "0.3.0"
 }

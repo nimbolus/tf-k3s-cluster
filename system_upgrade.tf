@@ -22,27 +22,3 @@ resource "helm_release" "system_upgrade_controller" {
   chart      = "system-upgrade-controller"
   version    = var.system_upgrade_controller_version
 }
-
-resource "kubectl_manifest" "system_upgrade_server_plan" {
-  count = var.system_upgrade_controller && var.system_upgrade_k3s_plan ? 1 : 0
-
-  yaml_body = templatefile("${path.module}/manifests/plans/k3s-server.yaml", {
-    channel = var.system_upgrade_k3s_plan_channel
-  })
-
-  depends_on = [
-    helm_release.system_upgrade_controller
-  ]
-}
-
-resource "kubectl_manifest" "system_upgrade_agent_plan" {
-  count = var.system_upgrade_controller && var.system_upgrade_k3s_plan ? 1 : 0
-
-  yaml_body = templatefile("${path.module}/manifests/plans/k3s-agent.yaml", {
-    channel = var.system_upgrade_k3s_plan_channel
-  })
-
-  depends_on = [
-    helm_release.system_upgrade_controller
-  ]
-}
