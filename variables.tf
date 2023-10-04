@@ -151,15 +151,5 @@ variable "system_upgrade_controller" {
 
 variable "system_upgrade_controller_version" {
   description = "system-upgrade-controller Helm chart version"
-  default     = "0.1.0"
-}
-
-variable "system_upgrade_k3s_plan" {
-  description = "enable system-upgrade-controller plan for unattended k3s updates"
-  default     = true
-}
-
-variable "system_upgrade_k3s_plan_channel" {
-  description = "upgrade channel unattended k3s updates (supported channels: stable, latest)"
-  default     = "stable"
+  default     = "0.3.0"
 }
