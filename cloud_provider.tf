@@ -2,7 +2,7 @@ locals {
   cloud_provider_create_namespace = var.cloud_controller_manager || var.cinder_csi ? true : false
 
   cloud_controller_manager_version_matrix = {
-    # kubernetes vesion => cloud-controller-manager chart version
+    # kubernetes version => cloud-controller-manager chart version
     "v1.20" : "1.0.2",
     "v1.21" : "1.0.2",
     "v1.22" : "1.1.2",
@@ -15,7 +15,7 @@ locals {
   cloud_controller_manager_version = var.cloud_controller_manager_version != null ? var.cloud_controller_manager_version : local.cloud_controller_manager_version_matrix[var.kubernetes_version]
 
   cinder_csi_version_matrix = {
-    # kubernetes vesion => cinder-csi chart version
+    # kubernetes version => cinder-csi chart version
     "v1.20" : "1.2.14",
     "v1.21" : "1.3.8",
     "v1.22" : "1.4.9",
