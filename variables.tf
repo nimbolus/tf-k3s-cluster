@@ -133,7 +133,7 @@ variable "cilium_cni_chart" {
 
 variable "cilium_cni_version" {
   description = "Cilium CNI Helm chart version"
-  default     = "1.11.7"
+  default     = "1.14.2"
 }
 
 variable "cilium_cni_values" {

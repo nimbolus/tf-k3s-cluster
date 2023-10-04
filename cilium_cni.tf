@@ -7,5 +7,12 @@ resource "helm_release" "cilium_cni" {
   chart      = var.cilium_cni_chart
   version    = var.cilium_cni_version
 
-  values = [var.cilium_cni_values]
+  values = concat(
+    [var.cilium_cni_values],
+    var.k3s_master_load_balancer ? [<<-EOT
+      k8sServiceHost: ${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}
+      k8sServicePort: 443
+      EOT
+    ] : [],
+  )
 }
