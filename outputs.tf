@@ -41,3 +41,11 @@ output "agents_node_ips" {
 output "agents_node_external_ips" {
   value = { for p, v in module.agent_node_pools : p => v["agents_node_external_ips"] }
 }
+
+output "k3s_master_lb_ip" {
+  value = try(openstack_lb_loadbalancer_v2.k3s_master.0.vip_address, null)
+}
+
+output "k3s_master_lb_floating_ip" {
+  value = try(openstack_networking_floatingip_v2.k3s_master.0.address, null)
+}

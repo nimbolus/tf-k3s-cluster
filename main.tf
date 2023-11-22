@@ -25,6 +25,8 @@ locals {
     var.cluster_server_taint ? ["--node-taint", "node-role.kubernetes.io/master=true:NoSchedule"] : [],
     var.k3s_master_load_balancer ? ["--tls-san", openstack_lb_loadbalancer_v2.k3s_master.0.vip_address] : [],
     var.cloud_controller_manager ? ["--disable-cloud-controller", "--kubelet-arg", "cloud-provider=external", "--disable", "servicelb"] : [],
+    length(openstack_networking_floatingip_v2.k3s_master) > 0 ? ["--tls-san", openstack_networking_floatingip_v2.k3s_master.0.address] : [],
+    var.cloud_controller_manager ? ["--disable-cloud-controller", "--disable", "servicelb"] : [],
     var.cilium_cni ? ["--flannel-backend", "none", "--disable-network-policy"] : [],
     var.cluster_k3s_server_args,
   )
@@ -108,8 +110,15 @@ module "server1" {
 }
 
 locals {
-  k3s_server1_url = module.server1.k3s_external_url == "" ? module.server1.k3s_url : module.server1.k3s_external_url
-  k3s_server_url  = var.k3s_master_load_balancer ? "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}" : module.server1.k3s_url
+  # k3s server url for node join
+  k3s_server_url = var.k3s_master_load_balancer ? "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}" : module.server1.k3s_url
+  # k3s server url for external access
+  k3s_server_external_url = coalesce(
+    length(openstack_networking_floatingip_v2.k3s_master) > 0 ? "https://${openstack_networking_floatingip_v2.k3s_master.0.address}" : null,
+    var.k3s_master_load_balancer ? "https://${openstack_lb_loadbalancer_v2.k3s_master.0.vip_address}" : null,
+    module.server1.k3s_external_url != "" ? module.server1.k3s_external_url : null,
+    module.server1.k3s_url,
+  )
 }
 
 module "servers" {
@@ -176,7 +185,7 @@ module "agent_node_pools" {
 }
 
 data "k8sbootstrap_auth" "auth" {
-  server = var.k3s_master_load_balancer ? local.k3s_server_url : local.k3s_server1_url
+  server = local.k3s_server_external_url
   token  = local.cluster_token
 
   depends_on = [

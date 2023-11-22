@@ -5,6 +5,13 @@ resource "openstack_lb_loadbalancer_v2" "k3s_master" {
   vip_subnet_id = var.cluster_subnet_id
 }
 
+resource "openstack_networking_floatingip_v2" "k3s_master" {
+  count = var.k3s_master_load_balancer && var.k3s_master_load_balancer_floating_ip_pool != null ? 1 : 0
+
+  pool    = var.k3s_master_load_balancer_floating_ip_pool
+  port_id = openstack_lb_loadbalancer_v2.k3s_master.0.vip_port_id
+}
+
 resource "openstack_lb_pool_v2" "k3s_master" {
   count = var.k3s_master_load_balancer ? 1 : 0
 
