@@ -8,22 +8,22 @@ locals {
     "v1.22" : "1.1.2",
     "v1.23" : "1.2.0",
     "v1.24" : "2.24.0",
-    "v1.25" : "2.25.0",
-    "v1.26" : "2.26.0",
-    "v1.27" : "2.27.1",
+    "v1.25" : "2.25.1",
+    "v1.26" : "2.26.5",
+    "v1.27" : "2.27.6",
   }
   cloud_controller_manager_version = var.cloud_controller_manager_version != null ? var.cloud_controller_manager_version : local.cloud_controller_manager_version_matrix[var.kubernetes_version]
 
   cinder_csi_version_matrix = {
     # kubernetes version => cinder-csi chart version
     "v1.20" : "1.2.14",
-    "v1.21" : "1.3.8",
+    "v1.21" : "1.3.9",
     "v1.22" : "1.4.9",
-    "v1.23" : "2.1.0",
+    "v1.23" : "2.1.1",
     "v1.24" : "2.24.0",
-    "v1.25" : "2.25.0",
+    "v1.25" : "2.25.1",
     "v1.26" : "2.26.0",
-    "v1.27" : "2.27.1",
+    "v1.27" : "2.27.3",
   }
   cinder_csi_version = var.cinder_csi_version != null ? var.cinder_csi_version : local.cinder_csi_version_matrix[var.kubernetes_version]
 }
