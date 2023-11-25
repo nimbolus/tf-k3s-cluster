@@ -4,7 +4,7 @@ resource "openstack_compute_servergroup_v2" "agents" {
 }
 
 module "agents" {
-  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.2.5"
+  source = "git::https://github.com/nimbolus/tf-k3s.git//k3s-openstack?ref=v4.3.0"
 
   count = var.node_pool["size"]
 
