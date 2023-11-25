@@ -11,6 +11,7 @@ locals {
     "v1.25" : "2.25.1",
     "v1.26" : "2.26.5",
     "v1.27" : "2.27.6",
+    "v1.28" : "2.28.3",
   }
   cloud_controller_manager_version = var.cloud_controller_manager_version != null ? var.cloud_controller_manager_version : local.cloud_controller_manager_version_matrix[var.kubernetes_version]
 
@@ -24,6 +25,7 @@ locals {
     "v1.25" : "2.25.1",
     "v1.26" : "2.26.0",
     "v1.27" : "2.27.3",
+    "v1.28" : "2.28.1",
   }
   cinder_csi_version = var.cinder_csi_version != null ? var.cinder_csi_version : local.cinder_csi_version_matrix[var.kubernetes_version]
 }

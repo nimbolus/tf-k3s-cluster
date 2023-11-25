@@ -74,7 +74,7 @@ variable "openstack_application_credential_secret" {
 }
 
 variable "kubernetes_version" {
-  description = "Kubernetes major and minor version for CCM and CSI compatibility matrix (supported versions: v1.20-v1.27)"
+  description = "Kubernetes major and minor version for CCM and CSI compatibility matrix (supported versions: v1.20-v1.28)"
   default     = "v1.26"
 }
 
