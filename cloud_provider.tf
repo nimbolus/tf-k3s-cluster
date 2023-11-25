@@ -1,6 +1,4 @@
 locals {
-  cloud_provider_create_namespace = var.cloud_controller_manager || var.cinder_csi ? true : false
-
   cloud_controller_manager_version_matrix = {
     # kubernetes version => cloud-controller-manager chart version
     "v1.20" : "1.0.2",
@@ -30,27 +28,12 @@ locals {
   cinder_csi_version = var.cinder_csi_version != null ? var.cinder_csi_version : local.cinder_csi_version_matrix[var.kubernetes_version]
 }
 
-resource "kubernetes_namespace" "cloud_provider" {
-  count = local.cloud_provider_create_namespace ? 1 : 0
-
-  metadata {
-    name = "cloud-provider"
-  }
-
-  lifecycle {
-    ignore_changes = [
-      metadata.0.labels,
-      metadata.0.annotations,
-    ]
-  }
-}
-
 resource "kubernetes_secret" "cloud_config" {
-  count = local.cloud_provider_create_namespace ? 1 : 0
+  count = var.cloud_controller_manager || var.cinder_csi ? 1 : 0
 
   metadata {
-    name      = "cloud-config"
-    namespace = kubernetes_namespace.cloud_provider.0.metadata.0.name
+    name      = "openstack-cloud-config"
+    namespace = "kube-system"
   }
 
   data = {
@@ -83,7 +66,7 @@ resource "helm_release" "cloud_controller_manager" {
   repository = "https://kubernetes.github.io/cloud-provider-openstack"
   chart      = "openstack-cloud-controller-manager"
   name       = "cloud-controller-manager"
-  namespace  = kubernetes_namespace.cloud_provider.0.metadata.0.name
+  namespace  = "kube-system"
   version    = local.cloud_controller_manager_version
   values = [<<-EOT
     nodeSelector:
@@ -120,7 +103,7 @@ resource "helm_release" "cinder_csi" {
   repository = "https://kubernetes.github.io/cloud-provider-openstack"
   chart      = "openstack-cinder-csi"
   name       = "cinder-csi"
-  namespace  = kubernetes_namespace.cloud_provider.0.metadata.0.name
+  namespace  = "kube-system"
   version    = local.cinder_csi_version
   values = [var.cinder_csi_values, <<-EOT
     secret:

@@ -24,7 +24,7 @@ locals {
     ["--kube-apiserver-arg", "enable-bootstrap-token-auth", "--disable", "traefik", "--disable", "local-storage"],
     var.cluster_server_taint ? ["--node-taint", "node-role.kubernetes.io/master=true:NoSchedule"] : [],
     var.k3s_master_load_balancer ? ["--tls-san", openstack_lb_loadbalancer_v2.k3s_master.0.vip_address] : [],
-    var.cloud_controller_manager ? ["--disable-cloud-controller", "--disable", "servicelb"] : [],
+    var.cloud_controller_manager ? ["--disable-cloud-controller", "--kubelet-arg", "cloud-provider=external", "--disable", "servicelb"] : [],
     var.cilium_cni ? ["--flannel-backend", "none", "--disable-network-policy"] : [],
     var.cluster_k3s_server_args,
   )
@@ -163,7 +163,10 @@ module "agent_node_pools" {
   cluster_instance_stop_before_destroy = var.cluster_instance_stop_before_destroy
   cluster_floating_ip_pool             = var.cluster_floating_ip_pool
   cluster_token                        = random_password.cluster_token.result
-  cluster_k3s_args                     = var.cluster_k3s_args
+  cluster_k3s_args = concat(
+    var.cluster_k3s_args,
+    var.cloud_controller_manager ? ["--kubelet-arg", "cloud-provider=external"] : []
+  )
 
   k3s_url            = local.k3s_server_url
   security_group_ids = [module.secgroup.id]
