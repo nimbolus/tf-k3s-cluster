@@ -88,6 +88,16 @@ variable "cloud_controller_manager_version" {
   default     = null
 }
 
+variable "cloud_controller_manager_router_id" {
+  description = "OpenStack router ID used by CCM"
+  default     = null
+}
+
+variable "cloud_controller_manager_cluster_cidr" {
+  description = "Cluster CIDR configured in CCM"
+  default     = null
+}
+
 variable "cloud_controller_manager_lb_monitor" {
   description = "add monitors to octavia load balancers created by CCM"
   default     = true

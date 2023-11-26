@@ -43,7 +43,10 @@ resource "kubernetes_secret" "cloud_config" {
       region=${var.openstack_region}
       application-credential-id=${var.openstack_application_credential_id}
       application-credential-secret=${var.openstack_application_credential_secret}
-
+      %{if var.cloud_controller_manager_router_id != null}
+      [Route]
+      router-id=${var.cloud_controller_manager_router_id}
+      %{endif}
       [LoadBalancer]
       subnet-id=${var.cluster_subnet_id}
       create-monitor=${var.cloud_controller_manager_lb_monitor}
@@ -58,6 +61,14 @@ resource "kubernetes_secret" "cloud_config" {
       application-credential-secret=${var.openstack_application_credential_secret}
       EOT
   }
+}
+
+locals {
+  cloud_controller_manager_extra_args = <<-EOT
+  %{if var.cloud_controller_manager_cluster_cidr != null~}
+  - --cluster-cidr=${var.cloud_controller_manager_cluster_cidr}
+  %{endif~}
+  EOT
 }
 
 resource "helm_release" "cloud_controller_manager" {
@@ -85,7 +96,10 @@ resource "helm_release" "cloud_controller_manager" {
       - key: node-role.kubernetes.io/etcd
         value: "true"
         effect: NoExecute
-
+    %{if local.cloud_controller_manager_extra_args != null}
+    controllerExtraArgs: |-
+    ${local.cloud_controller_manager_extra_args~}
+    %{~endif}
     secret:
       create: false
       name: ${kubernetes_secret.cloud_config.0.metadata.0.name}
