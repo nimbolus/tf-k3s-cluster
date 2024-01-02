@@ -53,6 +53,11 @@ variable "k3s_master_load_balancer" {
   default     = false
 }
 
+variable "k3s_master_load_balancer_floating_ip_pool" {
+  description = "assign a floating IP from this pool to the k3s master load balancer"
+  default     = null
+}
+
 variable "openstack_auth_url" {
   description = "Keystone auth url used for CCM and Cinder CSI"
   default     = null
